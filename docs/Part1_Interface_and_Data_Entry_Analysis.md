@@ -52,3 +52,7 @@
 | `_manage_table.html`, `_manage_row.html` | `hx-get` (live search); `hx-post` + `hx-target="closest tr"` (stock, toggle); `hx-delete` + `hx-confirm` |
 | `_product_form.html` | `hx-post`, `hx-encoding="multipart/form-data"`, `hx-target="this"`, `hx-swap="outerHTML"` |
 | `_messages.html`, `_error.html` | `hx-swap-oob` for the messages area; inline 404 error |
+| `product_list.html` (search and filter bar) | `hx-get`, `hx-trigger="keyup changed delay:300ms, search"` (search box), `hx-trigger="change"` (category, sort), `hx-include` (each control sends the other two values), `hx-target="#product-grid"`, `hx-push-url`, `hx-indicator` |
+| `base.html` | `hx-headers` on `<body>` sends the CSRF token with every HTMX POST, PUT and DELETE request |
+
+**Note (product detail `/products/<id>/`):** the Add to Cart form uses `hx-post` and swaps an inline confirmation or error into `#add-result`, with `hx-indicator` showing a spinner, so the customer stays on the page.
