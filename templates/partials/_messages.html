@@ -1,0 +1,18 @@
+<div id="messages"{% if oob %} hx-swap-oob="true"{% endif %}>
+  {% for message in messages %}
+    <div class="alert {{ message.tags }}" role="{% if message.tags == 'error' %}alert{% else %}status{% endif %}">
+      <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        {% if message.tags == 'success' %}
+          <path d="M20 6 9 17l-5-5"/>
+        {% elif message.tags == 'error' %}
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+        {% elif message.tags == 'warning' %}
+          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/>
+        {% else %}
+          <circle cx="12" cy="12" r="10"/><path d="M12 16v.01M12 8v4"/>
+        {% endif %}
+      </svg>
+      <span>{{ message }}</span>
+    </div>
+  {% endfor %}
+</div>

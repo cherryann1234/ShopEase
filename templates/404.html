@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Page not found{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Page not found</h1>
+</div>
+{% url 'product_list' as catalog_url %}
+{% include "partials/_empty_state.html" with icon="box" heading="404 — Not found" message="Sorry, the page or item you asked for doesn’t exist or has been removed." cta_url=catalog_url cta_label="Back to the catalog" %}
+{% endblock %}

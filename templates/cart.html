@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Your Cart{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Shopping cart</span>
+    <h1>Your Cart</h1>
+    <p class="muted">Review your items before proceeding to checkout.</p>
+  </div>
+</div>
+<div id="cart-container" aria-live="polite">
+  {% include "partials/_cart_container.html" %}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% load static %}
+<article class="card">
+  <a class="card-img" href="{% url 'product_detail' product.id %}">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+    {% else %}
+      <img src="{% static 'img/placeholder.svg' %}" alt="No image available" loading="lazy">
+    {% endif %}
+    {% include "partials/_stock_badge.html" %}
+  </a>
+  <div class="card-body">
+    <span class="chip">{{ product.category.name }}</span>
+    <h3 class="card-title"><a href="{% url 'product_detail' product.id %}">{{ product.name }}</a></h3>
+    <p class="muted">{{ product.description|truncatewords:10 }}</p>
+    <div class="row">
+      <span class="card-price">₱{{ product.price|floatformat:"2g" }}</span>
+    </div>
+    <button class="btn" type="button"
+            hx-post="{% url 'cart_add' product.id %}" hx-vals='{"quantity": 1}'
+            hx-target="#msg-{{ product.id }}" hx-swap="innerHTML"
+            hx-indicator="#msg-spin-{{ product.id }}"
+            {% if product.is_out_of_stock %}disabled{% endif %}>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/></svg>
+      Add to Cart
+    </button>
+    <div id="msg-{{ product.id }}" class="card-msg" aria-live="polite"></div>
+    <span id="msg-spin-{{ product.id }}" class="htmx-indicator spinner" role="status" aria-label="Adding to cart"></span>
+  </div>
+</article>

@@ -1,0 +1,34 @@
+<form id="checkout-form" class="form-card" method="post" action="{% url 'checkout' %}" novalidate
+      hx-post="{% url 'checkout' %}" hx-target="this" hx-swap="outerHTML" hx-indicator="#checkout-spinner">
+  {% csrf_token %}
+  <h2>Contact &amp; delivery</h2>
+  {% for notice in notices %}
+    <div class="alert info" role="status">
+      <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v.01M12 8v4"/></svg>
+      <span>{{ notice }}</span>
+    </div>
+  {% endfor %}
+  {% if form.non_field_errors %}
+    <div class="alert error" role="alert">
+      <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <ul>{% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+    </div>
+  {% endif %}
+
+  {% include "partials/_form_field.html" with field=form.customer_name %}
+  {% include "partials/_form_field.html" with field=form.email %}
+  {% include "partials/_form_field.html" with field=form.phone %}
+  {% include "partials/_form_field.html" with field=form.address %}
+  {% include "partials/_form_field.html" with field=form.city %}
+
+  <h2>Shipping &amp; payment</h2>
+  {% include "partials/_form_field.html" with field=form.shipping_method %}
+  {% include "partials/_form_field.html" with field=form.payment_method %}
+
+  <div class="actions">
+    <button class="btn" type="submit">Place Order</button>
+    <a class="btn btn-light" href="{% url 'cart' %}">Back to Cart</a>
+    <span id="checkout-spinner" class="htmx-indicator spinner" role="status" aria-label="Placing order"></span>
+  </div>
+  {% if oob %}{% include "partials/_cart_summary.html" with summary_oob=True %}{% endif %}
+</form>

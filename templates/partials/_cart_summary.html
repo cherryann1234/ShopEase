@@ -1,0 +1,11 @@
+<aside id="order-summary" class="summary"{% if summary_oob %} hx-swap-oob="true"{% endif %} aria-live="polite">
+  <h2>Order Summary</h2>
+  <dl>
+    <dt>Subtotal ({{ item_count }} item{{ item_count|pluralize }})</dt>
+    <dd>₱{{ subtotal|floatformat:"2g" }}</dd>
+    <dt>Shipping ({{ shipping_label }})</dt>
+    <dd>{% if shipping %}₱{{ shipping|floatformat:"2g" }}{% else %}Free{% endif %}</dd>
+    <dt class="total">Total</dt>
+    <dd class="total">₱{{ total|floatformat:"2g" }}</dd>
+  </dl>
+</aside>

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Catalog{% endblock %}
+{% block content %}
+<div class="hero">
+  <div>
+    <span class="eyebrow">Catalog</span>
+    <h1>Browse the ShopEase collection</h1>
+    <p class="lead">Search, filter by category or sort to find the right products. Only products that are active in the store appear here.</p>
+  </div>
+</div>
+
+<form id="filter-form" class="filters" method="get" action="{% url 'product_list' %}" role="search"
+      hx-get="{% url 'product_list' %}" hx-trigger="submit"
+      hx-target="#product-grid" hx-indicator="#spinner" hx-push-url="true">
+  <label class="sr-only" for="q">Search products</label>
+  <input type="search" id="q" name="q" value="{{ q }}" placeholder="Search by name or description…"
+         hx-get="{% url 'product_list' %}" hx-trigger="keyup changed delay:300ms, search"
+         hx-include="#category, #sort">
+
+  <label class="sr-only" for="category">Category</label>
+  <select id="category" name="category" hx-get="{% url 'product_list' %}" hx-trigger="change"
+          hx-include="#q, #sort">
+    <option value="">All categories</option>
+    {% for c in categories %}
+      <option value="{{ c.slug }}" {% if c.slug == category %}selected{% endif %}>{{ c.name }}</option>
+    {% endfor %}
+  </select>
+
+  <label class="sr-only" for="sort">Sort by</label>
+  <select id="sort" name="sort" hx-get="{% url 'product_list' %}" hx-trigger="change"
+          hx-include="#q, #category">
+    {% for value, label in sort_options %}
+      <option value="{{ value }}" {% if value == sort %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+
+  <span id="spinner" class="htmx-indicator spinner" role="status" aria-label="Loading"></span>
+</form>
+
+<div id="product-grid" aria-live="polite">
+  {% include "partials/_product_grid.html" %}
+</div>
+{% endblock %}

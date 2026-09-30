@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed{% endblock %}
+{% block content %}
+<div class="confirm">
+  <div class="confirm-icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+  </div>
+  <h1>Order confirmed</h1>
+  <p class="lead">Thank you, {{ order.customer_name }}! Your order <strong>#{{ order.id }}</strong> has been placed successfully.</p>
+  <ul class="steps">
+    <li class="is-active"><span class="step-dot">1</span> Order received</li>
+    <li><span class="step-dot">2</span> Processing</li>
+    <li><span class="step-dot">3</span> Out for delivery</li>
+  </ul>
+</div>
+
+<div class="two-col">
+  <section class="form-card">
+    <h2>Order details</h2>
+    <dl class="detail-list">
+      <dt>Order number</dt><dd>#{{ order.id }}</dd>
+      <dt>Placed on</dt><dd>{{ order.date_created|date:"F j, Y, g:i A" }}</dd>
+      <dt>Status</dt><dd>{{ order.get_status_display }}</dd>
+      <dt>Email</dt><dd>{{ order.email }}</dd>
+      <dt>Mobile</dt><dd>{{ order.phone }}</dd>
+      <dt>Shipping</dt><dd>{{ order.get_shipping_method_display }}</dd>
+      <dt>Payment</dt><dd>{{ order.get_payment_method_display }}</dd>
+      {% if order.address %}<dt>Deliver to</dt><dd>{{ order.address }}, {{ order.city }}</dd>{% endif %}
+    </dl>
+  </section>
+  <aside class="summary">
+    <h2>Order total</h2>
+    <p class="price">₱{{ order.total|floatformat:"2g" }}</p>
+    <p class="muted">{{ order.items.count }} item{{ order.items.count|pluralize }} in this order</p>
+  </aside>
+</div>
+
+<div class="table-wrap">
+  <table class="responsive">
+    <thead><tr><th>Product</th><th>Unit price</th><th>Qty</th><th>Subtotal</th></tr></thead>
+    <tbody>
+      {% for item in order.items.all %}
+      <tr>
+        <td data-label="Product">{{ item.product.name|default:"(removed product)" }}</td>
+        <td data-label="Unit price">₱{{ item.unit_price|floatformat:"2g" }}</td>
+        <td data-label="Qty">{{ item.quantity }}</td>
+        <td data-label="Subtotal">₱{{ item.subtotal|floatformat:"2g" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="actions"><a class="btn" href="{% url 'product_list' %}">Continue Shopping</a></p>
+{% endblock %}

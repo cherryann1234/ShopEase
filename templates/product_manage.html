@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Manage Products{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Administration</span>
+    <h1>Manage Products</h1>
+    <p class="muted">Quickly update stock, toggle visibility or add, edit or remove products.</p>
+  </div>
+  <div class="actions">
+    <a class="btn" href="{% url 'product_add' %}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      Add Product
+    </a>
+    <a class="btn btn-light" href="{% url 'product_list' %}">Back to Catalog</a>
+  </div>
+</div>
+
+<div class="filters filters--slim">
+  <label class="sr-only" for="mq">Search products</label>
+  <input type="search" id="mq" name="q" value="{{ q }}" placeholder="Search products, descriptions or categories…"
+         hx-get="{% url 'product_manage' %}" hx-trigger="keyup changed delay:300ms, search"
+         hx-target="#manage-table" hx-indicator="#spinner" hx-push-url="true">
+  <span id="spinner" class="htmx-indicator spinner" role="status" aria-label="Loading"></span>
+</div>
+
+<div id="manage-table" aria-live="polite">
+  {% include "partials/_manage_table.html" %}
+</div>
+{% endblock %}

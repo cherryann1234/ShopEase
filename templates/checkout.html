@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Checkout</span>
+    <h1>Checkout</h1>
+    <p class="muted">Complete your shipping and payment details to place your order.</p>
+  </div>
+</div>
+<div class="two-col">
+  {% include "partials/_checkout_form.html" %}
+  {% include "partials/_cart_summary.html" %}
+</div>
+{% endblock %}

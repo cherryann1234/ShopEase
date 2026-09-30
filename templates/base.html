@@ -1,0 +1,65 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ShopEase — a small Django + HTMX demo store. Browse, add to cart and check out.">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}Shop{% endblock %} | ShopEase</title>
+  <link rel="icon" href="{% static 'img/placeholder.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {# HTMX from a CDN: no build step, cached across sites. See README for the full reason. #}
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.12/dist/htmx.min.js" defer></script>
+  <script src="{% static 'js/app.js' %}" defer></script>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container">
+      <a class="brand" href="{% url 'product_list' %}">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </span>
+        ShopEase
+      </a>
+
+      <nav id="nav-links" aria-label="Main">
+        <a href="{% url 'product_list' %}"{% if request.resolver_match.url_name == 'product_list' %} aria-current="page"{% endif %}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h18l-1.5 11a2 2 0 0 1-2 1.8H6.5a2 2 0 0 1-2-1.8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+          Shop
+        </a>
+        <a href="{% url 'product_manage' %}"{% if request.resolver_match.url_name == 'product_add' or request.resolver_match.url_name == 'product_edit' or request.resolver_match.url_name == 'product_manage' %} aria-current="page"{% endif %}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/><path d="M18 15v6M15 18h6"/></svg>
+          Manage
+        </a>
+        <a href="{% url 'cart' %}"{% if request.resolver_match.url_name == 'cart' or request.resolver_match.url_name == 'checkout' %} aria-current="page"{% endif %}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/></svg>
+          Cart {% include "partials/_cart_badge.html" %}
+        </a>
+      </nav>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="container page" id="main">
+    {% include "partials/_messages.html" %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <div class="container">
+      <a class="brand" href="{% url 'product_list' %}">ShopEase</a>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="{% url 'product_list' %}">Catalog</a>
+        <a href="{% url 'cart' %}">Cart</a>
+        <a href="{% url 'product_manage' %}">Manage products</a>
+      </nav>
+      <p class="footer-note">&copy; {% now "Y" %} ShopEase &middot; Django + HTMX demo store</p>
+    </div>
+  </footer>
+</body>
+</html>

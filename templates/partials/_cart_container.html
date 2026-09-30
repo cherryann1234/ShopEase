@@ -1,0 +1,62 @@
+{% if oob %}{% include "partials/_cart_badge.html" %}{% endif %}
+{% for notice in notices %}
+  <div class="alert info" role="status">
+    <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v.01M12 8v4"/></svg>
+    <span>{{ notice }}</span>
+  </div>
+{% endfor %}
+{% if message %}
+  <div class="alert {% if ok %}success{% else %}error{% endif %}" role="{% if ok %}status{% else %}alert{% endif %}">
+    <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      {% if ok %}<path d="M20 6 9 17l-5-5"/>{% else %}<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>{% endif %}
+    </svg>
+    <span>{{ message }}</span>
+  </div>
+{% endif %}
+
+{% if lines %}
+  <div class="two-col">
+    <div class="table-wrap">
+      <table class="responsive">
+        <thead>
+          <tr><th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th class="text-right">Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for line in lines %}
+          <tr id="line-{{ line.product.id }}">
+            <td data-label="Product">
+              <a class="table-title" href="{% url 'product_detail' line.product.id %}">{{ line.product.name }}</a>
+            </td>
+            <td data-label="Price" class="num">₱{{ line.product.price|floatformat:"2g" }}</td>
+            <td data-label="Quantity">
+              <input type="number" name="quantity" class="qty" value="{{ line.quantity }}" min="1" max="{{ line.product.stock }}"
+                     aria-label="Quantity for {{ line.product.name }}"
+                     hx-put="{% url 'cart_update' line.product.id %}" hx-trigger="change"
+                     hx-target="#cart-container" hx-indicator="#cart-spinner">
+            </td>
+            <td data-label="Subtotal" class="num">₱{{ line.subtotal|floatformat:"2g" }}</td>
+            <td data-label="Actions" class="text-right">
+              <button type="button" class="btn btn-sm btn-danger"
+                      hx-delete="{% url 'cart_remove' line.product.id %}"
+                      hx-confirm="Remove {{ line.product.name }} from your cart?"
+                      hx-target="#cart-container" hx-indicator="#cart-spinner">Remove</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% include "partials/_cart_summary.html" %}
+  </div>
+  <div class="actions">
+    <a class="btn btn-light" href="{% url 'product_list' %}">Continue Shopping</a>
+    <a class="btn" href="{% url 'checkout' %}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6 15 12 9 18"/></svg>
+      Proceed to Checkout
+    </a>
+    <span id="cart-spinner" class="htmx-indicator spinner" role="status" aria-label="Updating cart"></span>
+  </div>
+{% else %}
+  {% url 'product_list' as shop_url %}
+  {% include "partials/_empty_state.html" with icon="cart" heading="Your cart is empty" message="Browse our catalog to find something you’ll love." cta_url=shop_url cta_label="Continue Shopping" %}
+{% endif %}

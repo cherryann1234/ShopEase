@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{% if product %}Edit Product{% else %}Add Product{% endif %}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Manage products</span>
+    <h1>{% if product %}Edit “{{ product.name }}”{% else %}Add Product{% endif %}</h1>
+    <p class="muted">{% if product %}Update product details, pricing, stock and media.{% else %}Create a new product to display in the catalog.{% endif %}</p>
+  </div>
+</div>
+<div class="container-narrow">
+  {% include "partials/_product_form.html" %}
+</div>
+<p class="actions"><a class="btn btn-light" href="{% url 'product_manage' %}">Back to product list</a></p>
+{% endblock %}

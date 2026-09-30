@@ -1,0 +1,14 @@
+<p class="result-count">
+  <strong>{{ page.paginator.count }}</strong> product{{ page.paginator.count|pluralize }} found
+  {% if q or category %}<span class="muted">for your current filters</span>{% endif %}
+</p>
+{% if page.object_list %}
+  <div class="grid">
+    {% for product in page.object_list %}
+      {% include "partials/_product_card.html" %}
+    {% endfor %}
+  </div>
+  {% include "partials/_pagination.html" %}
+{% else %}
+  {% include "partials/_empty_state.html" with icon="search" heading="No products found" message="Nothing matches your current search and filters. Try a different keyword or clear the filters to see the full catalog." %}
+{% endif %}

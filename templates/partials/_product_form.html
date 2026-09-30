@@ -1,0 +1,27 @@
+<form id="product-form" class="form-card" method="post" enctype="multipart/form-data" novalidate
+      hx-post="{{ request.path }}" hx-encoding="multipart/form-data"
+      hx-target="this" hx-swap="outerHTML" hx-indicator="#form-spinner">
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+    <div class="alert error" role="alert">
+      <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <ul>{% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+    </div>
+  {% endif %}
+  {% if form.errors %}
+    <div class="alert error" role="alert">
+      <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <span>Please fix the highlighted fields below.</span>
+    </div>
+  {% endif %}
+
+  {% for field in form %}
+    {% include "partials/_form_field.html" %}
+  {% endfor %}
+
+  <div class="actions">
+    <button class="btn" type="submit">Save</button>
+    <a class="btn btn-light" href="{% url 'product_manage' %}">Cancel</a>
+    <span id="form-spinner" class="htmx-indicator spinner" role="status" aria-label="Saving"></span>
+  </div>
+</form>

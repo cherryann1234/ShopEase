@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{% url 'product_list' %}">Catalog</a></li>
+    <li><span aria-current="page">{{ product.name }}</span></li>
+  </ol>
+</nav>
+
+<article class="detail">
+  <figure class="detail-media">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% else %}
+      <img src="{% static 'img/placeholder.svg' %}" alt="No image available">
+    {% endif %}
+  </figure>
+  <div class="detail-info">
+    <span class="chip">{{ product.category.name }}</span>
+    <h1>{{ product.name }}</h1>
+    <p class="price">₱{{ product.price|floatformat:"2g" }}</p>
+    <p>
+      {% include "partials/_stock_badge.html" %}
+      {% if not product.is_out_of_stock %}<span class="muted">{{ product.stock }} unit{{ product.stock|pluralize }} available</span>{% endif %}
+    </p>
+    <div class="detail-desc">{{ product.description|default:"No description provided."|linebreaksbr }}</div>
+    <div class="detail-meta">
+      <span class="muted">Listed on {{ product.date_created|date:"F j, Y" }}</span>
+      <span class="muted">ID #{{ product.id }}</span>
+    </div>
+
+    <div class="detail-buy">
+      <form method="post" novalidate hx-post="{% url 'cart_add' product.id %}"
+            hx-target="#add-result" hx-indicator="#detail-spinner">
+        {% csrf_token %}
+        <div class="field">
+          <label for="{{ form.quantity.id_for_label }}">{{ form.quantity.label }}</label>
+          {{ form.quantity }}
+          <small class="help">Minimum 1, maximum {{ product.stock }}.</small>
+        </div>
+        <div class="actions">
+          <button class="btn" type="submit" {% if product.is_out_of_stock %}disabled{% endif %}>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/></svg>
+            Add to Cart
+          </button>
+          <span id="detail-spinner" class="htmx-indicator spinner" role="status" aria-label="Loading"></span>
+        </div>
+      </form>
+      <div id="add-result" aria-live="polite"></div>
+    </div>
+  </div>
+</article>
+{% endblock %}
